@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library Management System</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="dashboard.css" />
+    <!-- <base href="../../Login/login.html" /> -->
+  </head>
+
+  <body>
+    <div class="dashboard">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-book"></i>
+          <span>Library Management System</span>
+        </div>
+
+        <ul class="menu">
+          <li class="active">
+            <i class="fas fa-th-large"></i>
+            <a href="/Admin-Dashboard" data-link>Dashboard</a>
+          </li>
+          <li>
+            <i class="fas fa-book"></i>
+            <a href="/Books" data-link>Books</a>
+          </li>
+          <li>
+            <i class="fas fa-users"></i>
+            <a href="/Members" data-link>Members</a>
+          </li>
+          <li>
+            <i class="fas fa-exchange-alt"></i>
+            <a href="/Borrow-Return" data-link>Borrow / Return</a>
+          </li>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Top Bar -->
+        <header class="topbar">
+          <h2>Library Management System</h2>
+          <div class="admin">
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-envelope"></i>
+            <i class="fas fa-user-circle logout-icon"></i>
+          </div>
+        </header>
+
+        <!-- Dashboard Cards -->
+        <section class="cards">
+          <div class="card blue">
+            <h3>Total Books</h3>
+            <p>1,200</p>
+          </div>
+
+          <div class="card orange">
+            <h3>Borrowed Books</h3>
+            <p>300</p>
+          </div>
+
+          <div class="card green">
+            <h3>Available Books</h3>
+            <p>900</p>
+          </div>
+
+          <div class="card red">
+            <h3>Total Members</h3>
+            <p>450</p>
+          </div>
+        </section>
+
+        <!-- Recent Borrowings -->
+        <section class="section">
+          <h3>Recent Borrowings</h3>
+          <div class="borrowing-item">
+            <div>
+              <i class="fas fa-book"></i>
+              <span>John Doe, "The Alchemist". Due: 12/09/2024</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress blue"></div>
+            </div>
+          </div>
+          <div class="borrowing-item">
+            <div>
+              <i class="fas fa-book"></i>
+              <span>John Doe - "The Critique". Due: 13/10/2024</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress orange"></div>
+            </div>
+          </div>
+          <div class="borrowing-item">
+            <div>
+              <i class="fas fa-book"></i>
+              <span>New Book - "Data Science Basics"</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress green"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Recently Added Books and Recent Borrowings -->
+        <div class="grid-section">
+          <section class="section">
+            <h3>Recent Borrowings</h3>
+            <div class="borrowing-item">
+              <div>
+                <i class="fas fa-user"></i>
+                <span>John Nore - "The Authority"</span>
+              </div>
+            </div>
+            <div class="borrowing-item">
+              <div>
+                <i class="fas fa-user"></i>
+                <span>New Book - "Data Cremation"</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <h3>Recently Added Books</h3>
+            <div class="borrowing-item">
+              <div>
+                <i class="fas fa-check-circle" style="color: #10b981"></i>
+                <span>New Book (Data Analysis Blog/Online)</span>
+              </div>
+            </div>
+            <div class="borrowing-item">
+              <div>
+                <i class="fas fa-check-circle" style="color: #f97316"></i>
+                <span>New Book (Data Gathering, Sort)</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal">
+      <div class="modal-content">
+        <p>Are you sure you want to logout?</p>
+        <div class="modal-actions">
+          <button id="confirmLogout" class="confirm-btn">Yes, Logout</button>
+          <button id="cancelLogout" class="cancel-btn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="Dashboard.js"></script>
+  </body>
+</html>
