@@ -66,28 +66,28 @@ class Router {
 const routes = [
   {
     path: "Admin-Dashboard",
-    template: "/Admin-Dashboard/dashboard.html",
-    script: "/Admin-Dashboard/dashboard.js",
+    template: "Admin-Dashboard/dashboard.html",
+    script: "Admin-Dashboard/dashboard.js",
   },
   {
     path: "Books",
-    template: "/Books/books.html",
-    script: "/Books/books.js",
+    template: "Books/books.html",
+    script: "Books/books.js",
   },
   {
     path: "Members",
-    template: "/Members/members.html",
-    script: "/Members/members.js",
+    template: "Members/members.html",
+    script: "Members/members.js",
   },
   {
     path: "Borrow-Return",
-    template: "/Borrow-Return/borrow-return.html",
-    script: "/Borrow-Return/borrow-return.js",
+    template: "Borrow-Return/borrow-return.html",
+    script: "Borrow-Return/borrow-return.js",
   },
   {
     path: "Login",
-    template: "/Login/login.html",
-    script: "/Login/login.js",
+    template: "Login/login.html",
+    script: "Login/login.js",
   },
 ];
 
