@@ -1,3 +1,32 @@
+// Define routes
+const routes = [
+  {
+    path: "Admin-Dashboard",
+    template: "./Admin-Dashboard/dashboard.html",
+    script: "./Admin-Dashboard/dashboard.js",
+  },
+  {
+    path: "Books",
+    template: "./Books/books.html",
+    script: "./Books/books.js",
+  },
+  {
+    path: "Members",
+    template: "./Members/members.html",
+    script: "./Members/members.js",
+  },
+  {
+    path: "Borrow-Return",
+    template: "./Borrow-Return/borrow-return.html",
+    script: "./Borrow-Return/borrow-return.js",
+  },
+  {
+    path: "Login",
+    template: "./Login/login.html",
+    script: "./Login/login.js",
+  },
+];
+
 class Router {
   constructor(routes) {
     this.routes = routes;
@@ -6,12 +35,12 @@ class Router {
   }
 
   setupEventListeners() {
-    window.addEventListener("popstate", () => this.checkRoute());
+    window.addEventListener("hashchange", () => this.checkRoute());
     document.addEventListener("DOMContentLoaded", () => {
       document.body.addEventListener("click", (e) => {
         if (e.target.matches("[data-link]")) {
           e.preventDefault();
-          const path = e.target.getAttribute("href");
+          const path = e.target.getAttribute("href").replace("#", "");
           this.navigateTo(path);
         }
       });
@@ -19,17 +48,17 @@ class Router {
   }
 
   checkRoute() {
-    const path = window.location.pathname;
-    const route = this.routes.find((route) => path.includes(route.path));
+    const hash = window.location.hash.replace("#", "") || "Login";
+    const route = this.routes.find((route) => route.path === hash);
     if (route) {
       this.loadRoute(route);
     } else {
-      this.navigateTo("/Login");
+      this.navigateTo("Login");
     }
   }
 
   navigateTo(path) {
-    window.history.pushState({}, "", path);
+    window.location.hash = path;
     this.checkRoute();
   }
 
@@ -49,7 +78,7 @@ class Router {
       })
       .catch((err) => {
         console.error("Error loading route:", err);
-        this.navigateTo("/Login");
+        this.navigateTo("Login");
       });
   }
 
@@ -62,34 +91,4 @@ class Router {
   }
 }
 
-// Define routes
-const routes = [
-  {
-    path: "Admin-Dashboard",
-    template: "Admin-Dashboard/dashboard.html",
-    script: "Admin-Dashboard/dashboard.js",
-  },
-  {
-    path: "Books",
-    template: "Books/books.html",
-    script: "Books/books.js",
-  },
-  {
-    path: "Members",
-    template: "Members/members.html",
-    script: "Members/members.js",
-  },
-  {
-    path: "Borrow-Return",
-    template: "Borrow-Return/borrow-return.html",
-    script: "Borrow-Return/borrow-return.js",
-  },
-  {
-    path: "Login",
-    template: "Login/login.html",
-    script: "Login/login.js",
-  },
-];
-
-// Initialize the router
 const router = new Router(routes);
