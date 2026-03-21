@@ -1,18 +1,27 @@
-document.addEventListener("DOMContentLoaded", function () {
+function init() {
+  console.log("Login page initialized");
+
   const loginForm = document.getElementById("loginForm");
   const errorBox = document.getElementById("errorBox");
+
+  if (!loginForm) {
+    console.error("loginForm not found");
+    return;
+  }
 
   loginForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+    const username = document.getElementById("username")?.value;
+    const password = document.getElementById("password")?.value;
 
-    // Example validation logic
     if (username === "admin" && password === "admin123") {
-      window.location.href = "../Admin-Dashboard/dashboard.html"; // Redirect to dashboard
+      // ✅ SPA navigation (IMPORTANT)
+      window.location.hash = "Admin-Dashboard";
     } else {
-      errorBox.style.display = "block";
+      if (errorBox) {
+        errorBox.style.display = "block";
+      }
     }
   });
-});
+}

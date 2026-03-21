@@ -1,4 +1,3 @@
-// Define routes
 const routes = [
   {
     path: "Admin-Dashboard",
@@ -35,23 +34,18 @@ class Router {
   }
 
   init() {
-    this.setupEventListeners();
-    this.checkRoute();
-  }
-
-  setupEventListeners() {
     window.addEventListener("hashchange", () => this.checkRoute());
 
-    document.addEventListener("DOMContentLoaded", () => {
-      document.body.addEventListener("click", (e) => {
-        const link = e.target.closest("[data-link]");
-        if (link) {
-          e.preventDefault();
-          const path = link.getAttribute("href").replace("#", "");
-          this.navigateTo(path);
-        }
-      });
+    document.addEventListener("click", (e) => {
+      const link = e.target.closest("[data-link]");
+      if (link) {
+        e.preventDefault();
+        const path = link.getAttribute("href").replace("#", "");
+        this.navigateTo(path);
+      }
     });
+
+    this.checkRoute();
   }
 
   checkRoute() {
@@ -59,12 +53,11 @@ class Router {
 
     console.log("Navigating to:", hash);
 
-    const route = this.routes.find((route) => route.path === hash);
+    const route = this.routes.find((r) => r.path === hash);
 
     if (route) {
       this.loadRoute(route);
     } else {
-      console.warn("Route not found, redirecting to Login");
       this.navigateTo("Login");
     }
   }
@@ -78,7 +71,6 @@ class Router {
   async loadRoute(route) {
     const app = document.getElementById("app");
 
-    // Show loading state
     app.innerHTML = "<p>Loading...</p>";
 
     try {
@@ -87,30 +79,22 @@ class Router {
       const response = await fetch(route.template);
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error: ${response.status}`);
       }
 
       const html = await response.text();
-
-      // Inject HTML
       app.innerHTML = html;
 
-      // Load script if exists
       if (route.script) {
         this.loadScript(route.script);
       }
-    } catch (err) {
-      console.error("Error loading route:", err);
-
-      app.innerHTML = `
-        <h2>Error loading page</h2>
-        <p>${err.message}</p>
-      `;
+    } catch (error) {
+      console.error("Route load error:", error);
+      app.innerHTML = `<h2>Error loading page</h2><p>${error.message}</p>`;
     }
   }
 
   loadScript(src) {
-    // Remove previous script
     if (this.currentScript) {
       this.currentScript.remove();
     }
@@ -119,13 +103,22 @@ class Router {
     script.src = src;
     script.defer = true;
 
-    script.onload = () => console.log(`Script loaded: ${src}`);
-    script.onerror = () => console.error(`Failed to load script: ${src}`);
+    script.onload = () => {
+      console.log(`Script loaded: ${src}`);
+
+      // ✅ call page init function
+      if (typeof window.init === "function") {
+        window.init();
+      }
+    };
+
+    script.onerror = () => {
+      console.error(`Failed to load script: ${src}`);
+    };
 
     document.body.appendChild(script);
     this.currentScript = script;
   }
 }
 
-// Initialize router
 new Router(routes);
