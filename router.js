@@ -1,33 +1,33 @@
 const routes = [
   {
     path: "Admin-Dashboard",
-    template: "Frontend/src/Admin-Dashboard/dashboard.html",
-    css: "Frontend/src/Admin-Dashboard/dashboard.css",
-    script: "Frontend/src/Admin-Dashboard/dashboard.js",
+    template: "/Frontend/src/Admin-Dashboard/dashboard.html",
+    css: "/Frontend/src/Admin-Dashboard/dashboard.css",
+    script: "/Frontend/src/Admin-Dashboard/dashboard.js",
   },
   {
     path: "Books",
-    template: "Frontend/src/Books/books.html",
-    css: "Frontend/src/Books/books.css",
-    script: "Frontend/src/Books/books.js",
+    template: "/Frontend/src/Books/books.html",
+    css: "/Frontend/src/Books/books-styles.css",
+    script: "/Frontend/src/Books/books.js",
   },
   {
     path: "Members",
-    template: "Frontend/src/Members/members.html",
-    css: "Frontend/src/Members/members.css",
-    script: "Frontend/src/Members/members.js",
+    template: "/Frontend/src/Members/members.html",
+    css: "/Frontend/src/Members/members.css",
+    script: "/Frontend/src/Members/members.js",
   },
   {
     path: "Borrow-Return",
-    template: "Frontend/src/Borrow-Return/borrow-return.html",
-    css: "Frontend/src/Borrow-Return/borrow-return.css",
-    script: "Frontend/src/Borrow-Return/borrow-return.js",
+    template: "/Frontend/src/Borrow-Return/borrow-return.html",
+    css: "/Frontend/src/Borrow-Return/borrow-return.css",
+    script: "/Frontend/src/Borrow-Return/borrow-return.js",
   },
   {
     path: "Login",
-    template: "Frontend/src/Login/login.html",
-    css: "Frontend/src/Login/styles.css",
-    script: "Frontend/src/Login/login.js",
+    template: "/Frontend/src/Login/login.html",
+    css: "/Frontend/src/Login/styles.css",
+    script: "/Frontend/src/Login/login.js",
   },
 ];
 
@@ -40,36 +40,42 @@ class Router {
   }
 
   init() {
+    // Handle initial route
+    this.checkRoute();
+
+    // Handle hash changes
     window.addEventListener("hashchange", () => this.checkRoute());
 
+    // Handle navigation clicks
     document.addEventListener("click", (e) => {
       const link = e.target.closest("[data-link]");
       if (link) {
         e.preventDefault();
         const path = link.getAttribute("href").replace("#", "");
+        console.log("Link clicked, navigating to:", path);
         this.navigateTo(path);
       }
     });
-
-    this.checkRoute();
   }
 
   checkRoute() {
     const hash = window.location.hash.replace("#", "") || "Login";
-    console.log("Navigating to:", hash);
+    console.log("Checking route for hash:", hash);
 
     const route = this.routes.find((r) => r.path === hash);
 
     if (route) {
+      console.log("Route found:", route.path);
       this.loadRoute(route);
     } else {
+      console.log("Route not found, redirecting to Login");
       this.navigateTo("Login");
     }
   }
 
   navigateTo(path) {
+    console.log("Navigating to path:", path);
     window.location.hash = `#${path}`;
-    this.checkRoute();
   }
 
   async loadRoute(route) {
@@ -77,12 +83,11 @@ class Router {
     app.innerHTML = "<p>Loading...</p>";
 
     try {
-      console.log("Fetching:", route.template);
-
+      console.log("Fetching template:", route.template);
       const response = await fetch(route.template);
 
       if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const html = await response.text();
@@ -133,7 +138,6 @@ class Router {
 
     script.onload = () => {
       console.log(`Script loaded: ${src}`);
-
       if (typeof window.init === "function") {
         window.init();
       }
