@@ -11,10 +11,9 @@ function init() {
 
   // If the form is not found, stop and log an error
   if (!loginForm) {
-    console.error("loginForm not found");
+    console.error("Login form not found in the DOM.");
     return;
   }
-
   loginForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
