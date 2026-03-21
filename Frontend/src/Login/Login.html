@@ -50,32 +50,6 @@
     </div>
 
     <!-- Move script to bottom and wrap in DOMContentLoaded -->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const loginForm = document.getElementById("loginForm");
-        const errorBox = document.getElementById("errorBox");
-
-        if (!loginForm) {
-          console.error("Login form not found!");
-          return;
-        }
-
-        loginForm.addEventListener("submit", (event) => {
-          event.preventDefault();
-
-          const username = document.getElementById("username").value.trim();
-          const password = document.getElementById("password").value.trim();
-
-          // Dummy validation
-          if (username === "admin" && password === "admin") {
-            alert("Login successful!");
-            // Redirect to dashboard if needed
-            // window.location.href = "dashboard.html";
-          } else {
-            errorBox.style.display = "block";
-          }
-        });
-      });
-    </script>
+    <script src="login.js"></script>
   </body>
 </html>

@@ -1,4 +1,3 @@
-// login.js
 
 // Ensure the DOM is fully loaded before running
 document.addEventListener("DOMContentLoaded", init);
