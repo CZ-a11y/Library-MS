@@ -30,17 +30,24 @@ const routes = [
 class Router {
   constructor(routes) {
     this.routes = routes;
+    this.currentScript = null;
+    this.init();
+  }
+
+  init() {
     this.setupEventListeners();
     this.checkRoute();
   }
 
   setupEventListeners() {
     window.addEventListener("hashchange", () => this.checkRoute());
+
     document.addEventListener("DOMContentLoaded", () => {
       document.body.addEventListener("click", (e) => {
-        if (e.target.matches("[data-link]")) {
+        const link = e.target.closest("[data-link]");
+        if (link) {
           e.preventDefault();
-          const path = e.target.getAttribute("href").replace("#", "");
+          const path = link.getAttribute("href").replace("#", "");
           this.navigateTo(path);
         }
       });
@@ -49,46 +56,76 @@ class Router {
 
   checkRoute() {
     const hash = window.location.hash.replace("#", "") || "Login";
+
+    console.log("Navigating to:", hash);
+
     const route = this.routes.find((route) => route.path === hash);
+
     if (route) {
       this.loadRoute(route);
     } else {
+      console.warn("Route not found, redirecting to Login");
       this.navigateTo("Login");
     }
   }
 
   navigateTo(path) {
-    window.location.hash = path;
-    this.checkRoute();
+    if (window.location.hash.replace("#", "") !== path) {
+      window.location.hash = path;
+    }
   }
 
-  loadRoute(route) {
-    fetch(route.template)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.text();
-      })
-      .then((html) => {
-        document.getElementById("app").innerHTML = html;
-        if (route.script) {
-          this.loadScript(route.script);
-        }
-      })
-      .catch((err) => {
-        console.error("Error loading route:", err);
-        this.navigateTo("Login");
-      });
+  async loadRoute(route) {
+    const app = document.getElementById("app");
+
+    // Show loading state
+    app.innerHTML = "<p>Loading...</p>";
+
+    try {
+      console.log("Fetching:", route.template);
+
+      const response = await fetch(route.template);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const html = await response.text();
+
+      // Inject HTML
+      app.innerHTML = html;
+
+      // Load script if exists
+      if (route.script) {
+        this.loadScript(route.script);
+      }
+    } catch (err) {
+      console.error("Error loading route:", err);
+
+      app.innerHTML = `
+        <h2>Error loading page</h2>
+        <p>${err.message}</p>
+      `;
+    }
   }
 
   loadScript(src) {
+    // Remove previous script
+    if (this.currentScript) {
+      this.currentScript.remove();
+    }
+
     const script = document.createElement("script");
     script.src = src;
-    script.onload = () => console.log(`Script ${src} loaded`);
-    script.onerror = () => console.error(`Error loading script ${src}`);
+    script.defer = true;
+
+    script.onload = () => console.log(`Script loaded: ${src}`);
+    script.onerror = () => console.error(`Failed to load script: ${src}`);
+
     document.body.appendChild(script);
+    this.currentScript = script;
   }
 }
 
-const router = new Router(routes);
+// Initialize router
+new Router(routes);
