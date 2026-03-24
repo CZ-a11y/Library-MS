@@ -1,46 +1,23 @@
 function initLogin() {
-  console.log("Initializing login page");
+  console.log("Login page initialized");
 
   const loginForm = document.getElementById("loginForm");
-  const errorBox = document.getElementById("errorBox");
 
   if (!loginForm) {
-    console.error("Login form not found in the DOM.");
+    console.error("loginForm not found");
     return;
   }
 
-  loginForm.addEventListener("submit", function (event) {
-    event.preventDefault();
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
+    const username = document.getElementById("username")?.value;
+    const password = document.getElementById("password")?.value;
 
     if (username === "admin" && password === "admin123") {
       window.location.hash = "Admin-Dashboard";
-      window.location.reload(); // Force reload to ensure the new route is loaded
-      console.log("Login successful!");
     } else {
-      if (errorBox) {
-        errorBox.style.display = "block";
-        errorBox.textContent = "Invalid username or password.";
-      }
+      document.getElementById("errorBox").style.display = "block";
     }
   });
-}
-
-// Ensure the DOM is fully loaded before running
-function init() {
-  const loginForm = document.getElementById("loginForm");
-  if (loginForm) {
-    initLogin();
-  } else {
-    setTimeout(init, 100); // Retry after a short delay if the form is not found
-  }
-}
-
-// Run the init function when the DOM is ready
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
-} else {
-  init();
 }

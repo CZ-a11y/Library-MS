@@ -1,6 +1,6 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const editButtons = document.querySelectorAll(".edit-btn");
-  const deleteButtons = document.querySelectorAll(".delete-btn");
+function initMembers() {
+  console.log("Members page initialized");
+
   const addMemberBtn = document.querySelector(".add-member-btn");
 
   const addMemberModal = document.getElementById("addMemberModal");
@@ -11,15 +11,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let currentMemberRow = null;
 
-  // Add Member Button Event Listener
-  addMemberBtn.addEventListener("click", function () {
+  // ✅ Prevent crash if page not ready
+  if (!addMemberBtn) {
+    console.warn("Members elements not found");
+    return;
+  }
+
+  // --- Add Member ---
+  addMemberBtn.addEventListener("click", () => {
     addMemberModal.style.display = "block";
   });
 
-  // Add Member Form Submission
   document
     .getElementById("addMemberForm")
-    .addEventListener("submit", function (event) {
+    ?.addEventListener("submit", function (event) {
       event.preventDefault();
 
       const newName = document.getElementById("addName").value;
@@ -27,95 +32,80 @@ document.addEventListener("DOMContentLoaded", function () {
       const newPhone = document.getElementById("addPhone").value;
       const newStatus = document.getElementById("addStatus").value;
 
-      // Add new member to the table
       const tableBody = document.querySelector(".members-table tbody");
+
       const newRow = tableBody.insertRow();
 
-      const cell1 = newRow.insertCell(0);
-      const cell2 = newRow.insertCell(1);
-      const cell3 = newRow.insertCell(2);
-      const cell4 = newRow.insertCell(3);
-      const cell5 = newRow.insertCell(4);
-      const cell6 = newRow.insertCell(5);
-      const cell7 = newRow.insertCell(6);
+      newRow.innerHTML = `
+        <td>${tableBody.rows.length}</td>
+        <td>${newName}</td>
+        <td>${newEmail}</td>
+        <td>${newPhone}</td>
+        <td>${new Date().toISOString().split("T")[0]}</td>
+        <td><span class="status ${newStatus.toLowerCase()}">${newStatus}</span></td>
+        <td>
+          <button class="edit-btn">Edit</button>
+          <button class="delete-btn">Delete</button>
+        </td>
+      `;
 
-      cell1.textContent = tableBody.rows.length + 1;
-      cell2.textContent = newName;
-      cell3.textContent = newEmail;
-      cell4.textContent = newPhone;
-      cell5.textContent = new Date().toISOString().split("T")[0];
-      cell6.innerHTML = `<span class="status ${newStatus.toLowerCase()}">${newStatus}</span>`;
-      cell7.innerHTML = `<button class="edit-btn">Edit</button> <button class="delete-btn">Delete</button>`;
-
-      // Reset form and close modal
       document.getElementById("addMemberForm").reset();
       addMemberModal.style.display = "none";
       alert("Member added successfully.");
 
-      // Add event listeners to new buttons
       addEditDeleteListeners(newRow);
     });
 
-  // Edit Button Event Listeners
+  // --- Edit/Delete Logic ---
   function addEditDeleteListeners(row) {
     const editBtn = row.querySelector(".edit-btn");
     const deleteBtn = row.querySelector(".delete-btn");
 
-    editBtn.addEventListener("click", function () {
+    editBtn?.addEventListener("click", () => {
       currentMemberRow = row;
-      const memberId = row.querySelector("td:first-child").textContent;
-      const memberName = row.querySelector("td:nth-child(2)").textContent;
-      const memberEmail = row.querySelector("td:nth-child(3)").textContent;
-      const memberPhone = row.querySelector("td:nth-child(4)").textContent;
-      const memberStatus = row.querySelector(".status").textContent;
 
-      document.getElementById("editName").value = memberName;
-      document.getElementById("editEmail").value = memberEmail;
-      document.getElementById("editPhone").value = memberPhone;
-      document.getElementById("editStatus").value = memberStatus;
+      document.getElementById("editName").value = row.children[1].textContent;
+      document.getElementById("editEmail").value = row.children[2].textContent;
+      document.getElementById("editPhone").value = row.children[3].textContent;
+      document.getElementById("editStatus").value =
+        row.querySelector(".status").textContent;
 
       editMemberModal.style.display = "block";
     });
 
-    deleteBtn.addEventListener("click", function () {
+    deleteBtn?.addEventListener("click", () => {
       currentMemberRow = row;
       deleteMemberModal.style.display = "block";
     });
   }
 
-  // Add event listeners to existing buttons
-  editButtons.forEach((button) => {
-    const row = button.closest("tr");
+  // Attach to existing rows
+  document.querySelectorAll(".members-table tbody tr").forEach((row) => {
     addEditDeleteListeners(row);
   });
 
-  deleteButtons.forEach((button) => {
-    const row = button.closest("tr");
-    addEditDeleteListeners(row);
-  });
-
-  // Close Modal Event Listeners
-  closeButtons.forEach((button) => {
-    button.addEventListener("click", function () {
+  // --- Close Modals ---
+  closeButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
       addMemberModal.style.display = "none";
       editMemberModal.style.display = "none";
       deleteMemberModal.style.display = "none";
     });
   });
 
-  // Confirm Delete Button Event Listener
-  confirmDeleteBtn.addEventListener("click", function () {
+  // --- Delete Confirm ---
+  confirmDeleteBtn?.addEventListener("click", () => {
     if (currentMemberRow) {
       currentMemberRow.remove();
-      alert("Member deleted successfully.");
       deleteMemberModal.style.display = "none";
+      alert("Member deleted successfully.");
     }
   });
 
-  // Save Changes in Edit Modal
+  // --- Edit Save ---
   document
     .getElementById("editMemberForm")
-    .addEventListener("submit", function (event) {
+    ?.addEventListener("submit", function (event) {
       event.preventDefault();
 
       if (currentMemberRow) {
@@ -124,17 +114,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const newPhone = document.getElementById("editPhone").value;
         const newStatus = document.getElementById("editStatus").value;
 
-        currentMemberRow.querySelector("td:nth-child(2)").textContent = newName;
-        currentMemberRow.querySelector("td:nth-child(3)").textContent =
-          newEmail;
-        currentMemberRow.querySelector("td:nth-child(4)").textContent =
-          newPhone;
-        currentMemberRow.querySelector(".status").textContent = newStatus;
-        currentMemberRow.querySelector(".status").className =
-          `status ${newStatus.toLowerCase()}`;
+        currentMemberRow.children[1].textContent = newName;
+        currentMemberRow.children[2].textContent = newEmail;
+        currentMemberRow.children[3].textContent = newPhone;
+
+        const statusEl = currentMemberRow.querySelector(".status");
+        statusEl.textContent = newStatus;
+        statusEl.className = `status ${newStatus.toLowerCase()}`;
 
         editMemberModal.style.display = "none";
         alert("Member updated successfully.");
       }
     });
-});
+}
+
+window.initMembers = initMembers;
