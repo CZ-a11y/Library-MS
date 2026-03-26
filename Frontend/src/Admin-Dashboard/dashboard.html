@@ -3,8 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Library Management System</title>
-
+    <title>BookNest - Dashboard</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -17,26 +16,25 @@
 
       <aside class="sidebar" id="sidebar">
         <div class="logo">
-          <i class="fas fa-book-open"></i>
-          <span>Library Admin</span>
+          <i class="fas fa-book"></i>
+          <span>BookNest</span>
         </div>
-
         <ul class="menu" id="menuList">
           <li class="active">
             <i class="fas fa-th-large"></i>
-            <a href="#Admin-Dashboard">Dashboard</a>
+            <a href="#Admin-Dashboard" data-link>Dashboard</a>
           </li>
           <li>
             <i class="fas fa-book"></i>
-            <a href="#Books">Books</a>
+            <a href="#Books" data-link>Books</a>
           </li>
           <li>
             <i class="fas fa-users"></i>
-            <a href="#Members">Members</a>
+            <a href="#Members" data-link>Members</a>
           </li>
           <li>
             <i class="fas fa-exchange-alt"></i>
-            <a href="#Borrow-Return">Borrow / Return</a>
+            <a href="#Borrow-Return" data-link>Borrow / Return</a>
           </li>
         </ul>
       </aside>
@@ -162,6 +160,7 @@
       </main>
     </div>
 
+    <!-- Logout Modal -->
     <div id="logoutModal" class="modal" role="dialog" aria-modal="true">
       <div class="modal-content">
         <div class="modal-header">

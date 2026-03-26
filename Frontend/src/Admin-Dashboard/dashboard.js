@@ -52,8 +52,7 @@ function initDashboard() {
 
   confirmLogout?.addEventListener("click", () => {
     closeModal();
-
-    // ✅ IMPORTANT: use SPA routing instead of full reload
+    // Use SPA routing instead of full reload
     window.location.hash = "Login";
   });
 
@@ -70,5 +69,5 @@ function initDashboard() {
   });
 }
 
-// 🔥 CRITICAL: expose to router
+// Expose to router
 window.initDashboard = initDashboard;
