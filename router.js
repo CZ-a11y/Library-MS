@@ -5,6 +5,8 @@ const routes = [
     css: "/Frontend/src/Admin-Dashboard/dashboard.css",
     script: "/Frontend/src/Admin-Dashboard/dashboard.js",
     init: "initDashboard",
+    requiresAuth: true,
+    dependencies: ["/Frontend/src/js/utils.js"],
   },
   {
     path: "Books",
@@ -12,6 +14,8 @@ const routes = [
     css: "/Frontend/src/Books/books-styles.css",
     script: "/Frontend/src/Books/books.js",
     init: "initBooks",
+    requiresAuth: true,
+    dependencies: ["/Frontend/src/js/utils.js"],
   },
   {
     path: "Members",
@@ -19,6 +23,8 @@ const routes = [
     css: "/Frontend/src/Members/members.css",
     script: "/Frontend/src/Members/members.js",
     init: "initMembers",
+    requiresAuth: true,
+    dependencies: ["/Frontend/src/js/utils.js"],
   },
   {
     path: "Borrow-Return",
@@ -26,6 +32,8 @@ const routes = [
     css: "/Frontend/src/Borrow-Return/borrow-return.css",
     script: "/Frontend/src/Borrow-Return/borrow-return.js",
     init: "initBorrowReturn",
+    requiresAuth: true,
+    dependencies: ["/Frontend/src/js/utils.js"],
   },
   {
     path: "Login",
@@ -33,6 +41,8 @@ const routes = [
     css: "/Frontend/src/Login/styles.css",
     script: "/Frontend/src/Login/login.js",
     init: "initLogin",
+    requiresAuth: false,
+    dependencies: ["/Frontend/src/js/utils.js"],
   },
 ];
 
@@ -41,6 +51,7 @@ class Router {
     this.routes = routes;
     this.currentScript = null;
     this.currentCSS = null;
+    this.loadedScripts = new Set();
     this.init();
   }
 
@@ -64,10 +75,20 @@ class Router {
     const route = this.routes.find((r) => r.path === hash);
 
     if (route) {
+      // Check authentication if required
+      if (route.requiresAuth && !this.isAuthenticated()) {
+        this.navigateTo("Login");
+        return;
+      }
       this.loadRoute(route);
     } else {
       this.navigateTo("Login");
     }
+  }
+
+  isAuthenticated() {
+    // Check if user is authenticated without relying on LibraryAPI
+    return !!localStorage.getItem("token");
   }
 
   navigateTo(path) {
@@ -79,16 +100,20 @@ class Router {
     app.innerHTML = "<p>Loading...</p>";
 
     try {
+      // Load HTML
       const response = await fetch(route.template);
       const html = await response.text();
-
-      // Inject HTML
       app.innerHTML = html;
 
       // Load CSS
       if (route.css) this.loadCSS(route.css);
 
-      // Load JS and run correct init
+      // Load dependencies first
+      if (route.dependencies && route.dependencies.length > 0) {
+        await this.loadDependencies(route.dependencies);
+      }
+
+      // Load main script
       if (route.script) {
         this.loadScript(route.script, route.init);
       }
@@ -109,6 +134,35 @@ class Router {
     this.currentCSS = link;
   }
 
+  async loadDependencies(dependencies) {
+    // Load all dependencies in sequence
+    for (const dep of dependencies) {
+      if (!this.loadedScripts.has(dep)) {
+        await this.loadSingleScript(dep);
+        this.loadedScripts.add(dep);
+      }
+    }
+  }
+
+  loadSingleScript(src) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;
+
+      script.onload = () => {
+        console.log(`Dependency loaded: ${src}`);
+        resolve();
+      };
+
+      script.onerror = () => {
+        console.error(`Failed to load dependency: ${src}`);
+        reject(new Error(`Failed to load ${src}`));
+      };
+
+      document.body.appendChild(script);
+    });
+  }
+
   loadScript(src, initFunctionName) {
     if (this.currentScript) this.currentScript.remove();
 
@@ -118,9 +172,17 @@ class Router {
     script.onload = () => {
       console.log(`Script loaded: ${src}`);
 
-      // ✅ Call the correct init function
+      // Call the init function if it exists
       if (initFunctionName && typeof window[initFunctionName] === "function") {
-        window[initFunctionName]();
+        // Retry if the function isn't ready yet
+        const tryInit = () => {
+          if (typeof window[initFunctionName] === "function") {
+            window[initFunctionName]();
+          } else {
+            setTimeout(tryInit, 100);
+          }
+        };
+        tryInit();
       } else {
         console.warn(`Init function ${initFunctionName} not found`);
       }
@@ -135,4 +197,6 @@ class Router {
   }
 }
 
-new Router(routes);
+// Initialize the router
+const router = new Router(routes);
+window.router = router; // Make router available globally

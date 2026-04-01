@@ -8,6 +8,24 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <!-- In your books.html HEAD section -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+      // Initialize jsPDF globally
+      window.jsPDFReady = false;
+      window.jsPDF = null;
+
+      // Wait for the library to load
+      document.addEventListener("DOMContentLoaded", function () {
+        if (typeof window.jspdf !== "undefined" && window.jspdf.jsPDF) {
+          window.jsPDF = window.jspdf.jsPDF;
+          window.jsPDFReady = true;
+          console.log("jsPDF loaded successfully");
+        } else {
+          console.error("jsPDF failed to load");
+        }
+      });
+    </script>
   </head>
   <body>
     <div class="dashboard">

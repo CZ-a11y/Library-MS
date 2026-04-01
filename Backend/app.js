@@ -13,7 +13,14 @@ import transactionsRoutes from "./routes/transactionsRoutes.js";
 const app = express();
 
 // Middleware
-app.use(cors());
+// Configure CORS to allow requests from your frontend
+// In your backend app.js
+app.use(cors({
+  origin: 'http://127.0.0.1:5500', // Or your specific frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'x-auth-token'],
+  credentials: true
+}));
 // Use body-parser as default import
 app.use(bodyParser.json());
 
@@ -24,3 +31,8 @@ app.use("/api/members", membersRoutes);
 app.use("/api/transactions", transactionsRoutes);
 
 export default app;
+// {
+
+// 	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzc0NjcwMTE1LCJleHAiOjE3NzQ2NzM3MTV9.IBcm26RY6fYp4n2ON11-86TMsFD9zOL3nt641D91VC4"
+
+// }

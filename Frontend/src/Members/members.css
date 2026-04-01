@@ -306,7 +306,7 @@ body {
   color: white;
 }
 
-.delete-btn:hover {
+.delete-btn {
   background: #dc2626;
   transform: scale(1.05);
 }
@@ -420,7 +420,7 @@ body {
   color: white;
 }
 
-.delete-confirm-btn:hover {
+.delete-confirm-btn {
   background: #dc2626;
   transform: translateY(-2px);
 }

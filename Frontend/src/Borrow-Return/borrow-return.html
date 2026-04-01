@@ -72,18 +72,12 @@
                 <label for="member">Member:</label>
                 <select id="member" required>
                   <option value="" disabled selected>Select Member</option>
-                  <option value="1">John Doe</option>
-                  <option value="2">Jane Smith</option>
-                  <option value="3">Alice Johnson</option>
                 </select>
               </div>
               <div class="form-group">
                 <label for="book">Book:</label>
                 <select id="book" required>
                   <option value="" disabled selected>Select Book</option>
-                  <option value="1">The Great Gatsby</option>
-                  <option value="2">Barwing Book</option>
-                  <option value="3">The Science Basics</option>
                 </select>
               </div>
             </div>
@@ -134,24 +128,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="fade-in">
-                  <td>1</td>
-                  <td>John Doe</td>
-                  <td>The Great Gatsby</td>
-                  <td>Borrow</td>
-                  <td>2023-10-01</td>
-                  <td>2023-10-15</td>
-                  <td><span class="status active">Active</span></td>
-                </tr>
-                <tr class="fade-in">
-                  <td>2</td>
-                  <td>Jane Smith</td>
-                  <td>Barwing Book</td>
-                  <td>Return</td>
-                  <td>2023-09-25</td>
-                  <td>2023-10-05</td>
-                  <td><span class="status returned">Returned</span></td>
-                </tr>
+                <!-- Transactions will be loaded dynamically -->
               </tbody>
             </table>
           </div>
@@ -168,6 +145,7 @@
       // Initialize jsPDF globally
       const { jsPDF } = window.jspdf;
       window.jsPDF = jsPDF;
+      window.jsPDFReady = true;
     </script>
     <script src="borrow-return.js"></script>
   </body>
